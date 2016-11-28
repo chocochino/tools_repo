@@ -1,0 +1,11 @@
+[default]
+bears = InvalidLinkBear, FilenameBear, coalaBear
+files = **.py, **.md
+ignore = 
+[python]
+bears = PEP8Bear
+files = **.py
+[markdown]
+bears = LineLengthBear, MarkdownBear, KeywordBear
+files = **.md
+language = md

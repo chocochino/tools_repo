@@ -1,11 +1,15 @@
 [default]
-bears = InvalidLinkBear, FilenameBear, coalaBear
-files = **.py, **.md
+bears = coalaBear, InvalidLinkBear, FilenameBear
+files = **.md, **.py, **.yml
 ignore = 
+[yaml]
+bears = YAMLLintBear, KeywordBear, LineLengthBear
+files = **.yml
+language = yaml
 [python]
 bears = PEP8Bear
 files = **.py
 [markdown]
-bears = LineLengthBear, MarkdownBear, KeywordBear
+bears = MarkdownBear, KeywordBear, LineLengthBear
 files = **.md
 language = md

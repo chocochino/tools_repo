@@ -185,7 +185,8 @@ class GitCommand(object):
       cwd = None
     command.append(cmdv[0])
     # Need to use the --progress flag for fetch/clone so output will be
-    # displayed as by default git only does progress output if stderr is a TTY.
+    # displayed as by default git only does progress output if stderr is a 
+    # TTY.
     if sys.stderr.isatty() and cmdv[0] in ('fetch', 'clone'):
       if '--progress' not in cmdv and '--quiet' not in cmdv:
         command.append('--progress')

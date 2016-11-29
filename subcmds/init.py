@@ -161,12 +161,15 @@ to update the working directory files.
       # server where this git is located, so let's save that here.
       mirrored_manifest_git = None
       if opt.reference:
-        manifest_git_path = urllib.parse.urlparse(opt.manifest_url).path[1:]
-        mirrored_manifest_git = os.path.join(opt.reference, manifest_git_path)
+        manifest_git_path = urllib.parse.urlparse(
+          opt.manifest_url).path[1:]
+        mirrored_manifest_git = os.path.join(
+          opt.reference, manifest_git_path)
         if not mirrored_manifest_git.endswith(".git"):
           mirrored_manifest_git += ".git"
         if not os.path.exists(mirrored_manifest_git):
-          mirrored_manifest_git = os.path.join(opt.reference + '/.repo/manifests.git')
+          mirrored_manifest_git = os.path.join(
+            opt.reference + '/.repo/manifests.git')
 
       m._InitGitDir(mirror_git=mirrored_manifest_git)
 
@@ -236,7 +239,8 @@ to update the working directory files.
       print('fatal: cannot obtain manifest %s' % r.url, file=sys.stderr)
 
       # Better delete the manifest git dir if we created it; otherwise next
-      # time (when user fixes problems) we won't go through the "is_new" logic.
+      # time (when user fixes problems) we won't go through the "is_new"
+      # logic.
       if is_new:
         shutil.rmtree(m.gitdir)
       sys.exit(1)
@@ -353,7 +357,8 @@ to update the working directory files.
     Args:
       opt: Options from optparse.  We care about opt.depth.
     """
-    # Opt.depth will be non-None if user actually passed --depth to repo init.
+    # Opt.depth will be non-None if user actually passed --depth to repo
+    # init.
     if opt.depth is not None:
       if opt.depth > 0:
         # Positive values will set the depth.

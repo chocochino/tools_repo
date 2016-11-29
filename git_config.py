@@ -432,7 +432,8 @@ def _open_ssh(host, port=None):
     # Since the key wasn't in _master_keys, we think that master isn't running.
     # ...but before actually starting a master, we'll double-check.  This can
     # be important because we can't tell that that 'git@myhost.com' is the same
-    # as 'myhost.com' where "User git" is setup in the user's ~/.ssh/config file.
+    # as 'myhost.com' where "User git" is setup in the user's ~/.ssh/config
+    # file.
     check_command = command_base + ['-O','check']
     try:
       Trace(': %s', ' '.join(check_command))
@@ -639,17 +640,20 @@ class Remote(object):
             # If `info` contains '<', we assume the server gave us some sort
             # of HTML response back, like maybe a login page.
             #
-            # Assume HTTP if SSH is not enabled or ssh_info doesn't look right.
+            # Assume HTTP if SSH is not enabled or ssh_info doesn't 
+            # look right.
             self._review_url = http_url
           else:
             host, port = info.split()
-            self._review_url = self._SshReviewUrl(userEmail, host, port)
+            self._review_url = self._SshReviewUrl(
+              userEmail, host, port)
         except urllib.error.HTTPError as e:
           raise UploadError('%s: %s' % (self.review, str(e)))
         except urllib.error.URLError as e:
           raise UploadError('%s: %s' % (self.review, str(e)))
         except HTTPException as e:
-          raise UploadError('%s: %s' % (self.review, e.__class__.__name__))
+          raise UploadError('%s: %s' % 
+            (self.review, e.__class__.__name__))
 
         REVIEW_CACHE[u] = self._review_url
     return self._review_url + self.projectname

@@ -60,7 +60,8 @@ revision specified in the manifest.
                                     missing_ok=bool(self.gitc_manifest))
 
     # This must happen after we find all_projects, since GetProjects may need
-    # the local directory, which will disappear once we save the GITC manifest.
+    # the local directory, which will disappear once we save the GITC
+    # manifest.
     if self.gitc_manifest:
       gitc_projects = self.GetProjects(projects, manifest=self.gitc_manifest,
                                        missing_ok=True)

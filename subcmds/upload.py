@@ -42,7 +42,8 @@ def _ConfirmManyUploads(multiple_branches=False):
     print('ATTENTION: You are uploading an unusually high number of commits.')
   print('YOU PROBABLY DO NOT MEAN TO DO THIS. (Did you rebase across '
         'branches?)')
-  answer = input("If you are sure you intend to do this, type 'yes': ").strip()
+  answer = input(
+    "If you are sure you intend to do this, type 'yes': ").strip()
   return answer == "yes"
 
 def _die(fmt, *args):
@@ -198,7 +199,8 @@ Gerrit Code Review:  http://code.google.com/p/gerrit/
       commit_list = branch.commits
 
       destination = opt.dest_branch or project.dest_branch or project.revisionExpr
-      print('Upload project %s/ to remote branch %s:' % (project.relpath, destination))
+      print('Upload project %s/ to remote branch %s:' % 
+            (project.relpath, destination))
       print('  branch %s (%2d commit%s, %s):' % (
                     name,
                     len(commit_list),
@@ -344,9 +346,11 @@ Gerrit Code Review:  http://code.google.com/p/gerrit/
           key = 'review.%s.autoupload' % branch.project.remote.review
           answer = branch.project.config.GetBoolean(key)
 
-          # if they want to auto upload, let's not ask because it could be automated
+          # if they want to auto upload, let's not ask because it
+          # could be automated
           if answer is None:
-            sys.stdout.write('Uncommitted changes in ' + branch.project.name)
+            sys.stdout.write(
+              'Uncommitted changes in ' + branch.project.name)
             sys.stdout.write(' (did you forget to amend?):\n')
             sys.stdout.write('\n'.join(changes) + '\n')
             sys.stdout.write('Continue uploading? (y/N) ')
@@ -357,14 +361,16 @@ Gerrit Code Review:  http://code.google.com/p/gerrit/
               branch.error = 'User aborted'
               continue
 
-        # Check if topic branches should be sent to the server during upload
+        # Check if topic branches should be sent to the server during
+        # upload
         if opt.auto_topic is not True:
           key = 'review.%s.uploadtopic' % branch.project.remote.review
           opt.auto_topic = branch.project.config.GetBoolean(key)
 
         destination = opt.dest_branch or branch.project.dest_branch
 
-        # Make sure our local branch is not setup to track a different remote branch
+        # Make sure our local branch is not setup to track a different
+        # remote branch
         merge_branch = self._GetMergeBranch(branch.project)
         if destination:
           full_dest = 'refs/heads/%s' % destination
@@ -377,7 +383,8 @@ Gerrit Code Review:  http://code.google.com/p/gerrit/
             branch.uploaded = False
             continue
 
-        branch.UploadForReview(people, auto_topic=opt.auto_topic, draft=opt.draft, dest_branch=destination)
+        branch.UploadForReview(
+          people, auto_topic=opt.auto_topic, draft=opt.draft, dest_branch=destination)
         branch.uploaded = True
       except UploadError as e:
         branch.error = e
@@ -395,8 +402,8 @@ Gerrit Code Review:  http://code.google.com/p/gerrit/
           else:
             fmt = '\n       (%s)'
           print(('[FAILED] %-15s %-15s' + fmt) % (
-                 branch.project.relpath + '/', \
-                 branch.name, \
+                 branch.project.relpath + '/',
+                 branch.name,
                  str(branch.error)),
                  file=sys.stderr)
       print()
@@ -461,10 +468,12 @@ Gerrit Code Review:  http://code.google.com/p/gerrit/
     if not opt.bypass_hooks:
       hook = RepoHook('pre-upload', self.manifest.repo_hooks_project,
                       self.manifest.topdir,
-                      self.manifest.manifestProject.GetRemote('origin').url,
+                      self.manifest.manifestProject.GetRemote(
+                        'origin').url,
                       abort_if_user_denies=True)
       pending_proj_names = [project.name for (project, avail) in pending]
-      pending_worktrees = [project.worktree for (project, avail) in pending]
+      pending_worktrees = [
+        project.worktree for (project, avail) in pending]
       try:
         hook.Run(opt.allow_all_hooks, project_list=pending_proj_names,
                  worktree_list=pending_worktrees)

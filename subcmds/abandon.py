@@ -81,7 +81,8 @@ It is equivalent to "git branch -D <branchname>".
         err_msg = "error: cannot abandon %s" %br
         print(err_msg, file=sys.stderr)
         for proj in err[br]:
-          print(' '*len(err_msg) + " | %s" % p.relpath, file=sys.stderr)
+          print(' '*len(err_msg) + " | %s" % 
+                p.relpath, file=sys.stderr)
       sys.exit(1)
     elif not success:
       print('error: no project has local branch(es) : %s' % nb,
@@ -95,4 +96,5 @@ It is equivalent to "git branch -D <branchname>".
         else:
           result = "%s" % (
             ('\n'+' '*width + '| ').join(p.relpath for p in success[br]))
-        print("%s%s| %s\n" % (br,' '*(width-len(br)), result),file=sys.stderr)
+        print("%s%s| %s\n" % 
+              (br,' '*(width-len(br)), result),file=sys.stderr)

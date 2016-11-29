@@ -194,9 +194,11 @@ class _Repo(object):
       result = 1
     except InvalidProjectGroupsError as e:
       if e.name:
-        print('error: project group must be enabled for project %s' % e.name, file=sys.stderr)
+        print('error: project group must be enabled for project %s' 
+          % e.name, file=sys.stderr)
       else:
-        print('error: project group must be enabled for the project in the current directory', file=sys.stderr)
+        print(
+          'error: project group must be enabled for the project in the current directory', file=sys.stderr)
       result = 1
     finally:
       elapsed = time.time() - start
@@ -204,7 +206,8 @@ class _Repo(object):
       minutes, seconds = divmod(remainder, 60)
       if gopts.time:
         if hours == 0:
-          print('real\t%dm%.3fs' % (minutes, seconds), file=sys.stderr)
+          print('real\t%dm%.3fs' % 
+            (minutes, seconds), file=sys.stderr)
         else:
           print('real\t%dh%dm%.3fs' % (hours, minutes, seconds),
                 file=sys.stderr)
@@ -315,7 +318,8 @@ class _UserAgentHandler(urllib.request.BaseHandler):
     return req
 
 def _AddPasswordFromUserInput(handler, msg, req):
-  # If repo could not find auth info from netrc, try to get it from user input
+  # If repo could not find auth info from netrc, try to get it from user 
+  # input
   url = req.get_full_url()
   user, password = handler.passwd.find_user_password(None, url)
   if user is None:
@@ -381,7 +385,8 @@ class _KerberosAuthHandler(urllib.request.BaseHandler):
 
   def http_error_401(self, req, fp, code, msg, headers): # pylint:disable=unused-argument
     host = req.get_host()
-    retry = self.http_error_auth_reqed('www-authenticate', host, req, headers)
+    retry = self.http_error_auth_reqed(
+      'www-authenticate', host, req, headers)
     return retry
 
   def http_error_auth_reqed(self, auth_header, host, req, headers):
@@ -402,7 +407,8 @@ class _KerberosAuthHandler(urllib.request.BaseHandler):
       req.add_unredirected_header('Authorization', neghdr)
       response = self.parent.open(req)
 
-      srvauth = self._negotiate_get_authdata(auth_header, response.info())
+      srvauth = self._negotiate_get_authdata(
+        auth_header, response.info())
       if self._validate_response(srvauth):
         return response
     except kerberos.GSSError:
@@ -474,7 +480,8 @@ def init_http():
 
   if 'http_proxy' in os.environ:
     url = os.environ['http_proxy']
-    handlers.append(urllib.request.ProxyHandler({'http': url, 'https': url}))
+    handlers.append(urllib.request.ProxyHandler(
+      {'http': url, 'https': url}))
   if 'REPO_CURL_VERBOSE' in os.environ:
     handlers.append(urllib.request.HTTPHandler(debuglevel=1))
     handlers.append(urllib.request.HTTPSHandler(debuglevel=1))

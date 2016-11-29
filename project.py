@@ -126,7 +126,8 @@ class DownloadedChange(object):
                                                           '--pretty=oneline',
                                                           '--reverse',
                                                           '--date-order',
-                                                          not_rev(self.base),
+                                                          not_rev(
+                                                            self.base),
                                                           self.commit,
                                                           '--')
     return self._commit_cache
@@ -152,7 +153,8 @@ class ReviewableBranch(object):
                                                           '--pretty=oneline',
                                                           '--reverse',
                                                           '--date-order',
-                                                          not_rev(self.base),
+                                                          not_rev(
+                                                            self.base),
                                                           R_HEADS + self.name,
                                                           '--')
     return self._commit_cache
@@ -301,7 +303,8 @@ class _LinkFile(object):
       else:
         absSrcFiles = glob.glob(absSrc)
         for absSrcFile in absSrcFiles:
-          # Create a releative path from source dir to destination dir
+          # Create a releative path from source dir to destination 
+          # dir
           absSrcDir = os.path.dirname(absSrcFile)
           relSrcDir = os.path.relpath(absSrcDir, absDestDir)
 
@@ -499,7 +502,8 @@ class RepoHook(object):
 
   def _ManifestUrlHasSecureScheme(self):
     """Check if the URI for the manifest is a secure transport."""
-    secure_schemes = ('file', 'https', 'ssh', 'persistent-https', 'sso', 'rpc')
+    secure_schemes = ('file', 'https', 'ssh', 
+                      'persistent-https', 'sso', 'rpc')
     parse_results = urllib.parse.urlparse(self._manifest_url)
     return parse_results.scheme in secure_schemes
 
@@ -567,7 +571,8 @@ class RepoHook(object):
 
       # Running the script should have defined a main() function.
       if 'main' not in context:
-        raise HookError('Missing main() in: "%s"' % self._script_fullpath)
+        raise HookError('Missing main() in: "%s"' % 
+                        self._script_fullpath)
 
       # Add 'hook_should_take_kwargs' to the arguments to be passed to main.
       # We don't actually want hooks to define their main with this argument--
@@ -575,7 +580,8 @@ class RepoHook(object):
       # For instance, a pre-upload hook should be defined like:
       #   def main(project_list, **kwargs):
       #
-      # This allows us to later expand the API without breaking old hooks.
+      # This allows us to later expand the API without breaking old 
+      # hooks.
       kwargs = kwargs.copy()
       kwargs['hook_should_take_kwargs'] = True
 
@@ -1267,7 +1273,8 @@ class Project(object):
     if self.clone_depth:
       depth = self.clone_depth
     else:
-      depth = self.manifest.manifestProject.config.GetString('repo.depth')
+      depth = self.manifest.manifestProject.config.GetString(
+        'repo.depth')
 
     need_to_fetch = not (optimized_fetch and
                          (ID_RE.match(self.revisionExpr) and
@@ -1502,7 +1509,8 @@ class Project(object):
     # make src relative path to dest
     absdestdir = os.path.dirname(absdest)
     relsrc = os.path.relpath(os.path.join(self.worktree, src), absdestdir)
-    self.linkfiles.append(_LinkFile(self.worktree, src, dest, relsrc, absdest))
+    self.linkfiles.append(
+      _LinkFile(self.worktree, src, dest, relsrc, absdest))
 
   def AddAnnotation(self, name, value, keep):
     self.annotations.append(_Annotation(name, value, keep))
@@ -2007,7 +2015,8 @@ class Project(object):
     spec = []
     if not current_branch_only:
       # Fetch whole repo
-      spec.append(str((u'+refs/heads/*:') + remote.ToLocal('refs/heads/*')))
+      spec.append(str((u'+refs/heads/*:') + 
+        remote.ToLocal('refs/heads/*')))
     elif tag_name is not None:
       spec.append('tag')
       spec.append(tag_name)
@@ -2024,7 +2033,8 @@ class Project(object):
         if branch is not None and branch.strip():
           if not branch.startswith('refs/'):
             branch = R_HEADS + branch
-          spec.append(str((u'+%s:' % branch) + remote.ToLocal(branch)))
+          spec.append(
+            str((u'+%s:' % branch) + remote.ToLocal(branch)))
     cmd.extend(spec)
 
     ok = False
@@ -2034,7 +2044,8 @@ class Project(object):
       if ret == 0:
         ok = True
         break
-      # If needed, run the 'git remote prune' the first time through the loop
+      # If needed, run the 'git remote prune' the first time through the 
+      # loop
       elif (not _i and
             "error:" in gitcmd.stderr and
             "git remote prune" in gitcmd.stderr):
@@ -2047,7 +2058,8 @@ class Project(object):
       elif current_branch_only and is_sha1 and ret == 128:
         # Exit code 128 means "couldn't find the ref you asked for"; if we're
         # in sha1 mode, we just tried sync'ing from the upstream field; it
-        # doesn't exist, thus abort the optimization attempt and do a full sync.
+        # doesn't exist, thus abort the optimization attempt and do a
+        # full sync.
         break
       elif ret < 0:
         # Git died with a signal, exit immediately
@@ -2074,7 +2086,8 @@ class Project(object):
                                    initial=False, quiet=quiet, alt_dir=alt_dir,
                                    depth=None)
         else:
-          # Avoid infinite recursion: sync all branches with depth set to None
+          # Avoid infinite recursion: sync all branches with depth
+          # set to None
           return self._RemoteFetch(name=name, current_branch_only=False,
                                    initial=False, quiet=quiet, alt_dir=alt_dir,
                                    depth=None)
@@ -2105,7 +2118,8 @@ class Project(object):
       return False
 
     if not exist_dst:
-      exist_dst = self._FetchBundle(bundle_url, bundle_tmp, bundle_dst, quiet)
+      exist_dst = self._FetchBundle(
+        bundle_url, bundle_tmp, bundle_dst, quiet)
     if not exist_dst:
       return False
 
@@ -2184,7 +2198,8 @@ class Project(object):
           return True
         else:
           if not quiet:
-            print("Invalid clone.bundle file; ignoring.", file=sys.stderr)
+            print("Invalid clone.bundle file; ignoring.", 
+                  file=sys.stderr)
           return False
     except OSError:
       return False
@@ -2243,12 +2258,14 @@ class Project(object):
     init_git_dir = not os.path.exists(self.gitdir)
     init_obj_dir = not os.path.exists(self.objdir)
     try:
-      # Initialize the bare repository, which contains all of the objects.
+      # Initialize the bare repository, which contains all of the
+      # objects.
       if init_obj_dir:
         os.makedirs(self.objdir)
         self.bare_objdir.init()
 
-      # If we have a separate directory to hold refs, initialize it as well.
+      # If we have a separate directory to hold refs, initialize it as
+      # well.
       if self.objdir != self.gitdir:
         if init_git_dir:
           os.makedirs(self.gitdir)
@@ -2257,7 +2274,8 @@ class Project(object):
           self._ReferenceGitDir(self.objdir, self.gitdir, share_refs=False,
                                 copy_all=True)
         try:
-          self._CheckDirReference(self.objdir, self.gitdir, share_refs=False)
+          self._CheckDirReference(
+            self.objdir, self.gitdir, share_refs=False)
         except GitError as e:
           if force_sync:
             print("Retrying clone after deleting %s" %
@@ -2301,7 +2319,8 @@ class Project(object):
         for key in ['user.name', 'user.email']:
           if m.Has(key, include_defaults=False):
             self.config.SetString(key, m.GetString(key))
-        self.config.SetString('filter.lfs.smudge', 'git-lfs smudge --skip -- %f')
+        self.config.SetString(
+          'filter.lfs.smudge', 'git-lfs smudge --skip -- %f')
         if self.manifest.IsMirror:
           self.config.SetString('core.bare', 'true')
         else:
@@ -2344,7 +2363,8 @@ class Project(object):
                 self.relpath, name)
           continue
       try:
-        os.symlink(os.path.relpath(stock_hook, os.path.dirname(dst)), dst)
+        os.symlink(os.path.relpath(
+          stock_hook, os.path.dirname(dst)), dst)
       except OSError as e:
         if e.errno == errno.EPERM:
           raise GitError('filesystem must support symlinks')
@@ -2400,7 +2420,8 @@ class Project(object):
         src = os.path.realpath(os.path.join(srcdir, name))
         # Fail if the links are pointing to the wrong place
         if src != dst:
-          _error('%s is different in %s vs %s', name, destdir, srcdir)
+          _error('%s is different in %s vs %s', 
+                  name, destdir, srcdir)
           raise GitError('--force-sync not enabled; cannot overwrite a local '
                          'work tree. If you\'re comfortable with the '
                          'possibility of losing the work tree\'s git metadata,'
@@ -2484,7 +2505,8 @@ class Project(object):
         raise e
 
       if init_dotgit:
-        _lwrite(os.path.join(dotgit, HEAD), '%s\n' % self.GetRevisionId())
+        _lwrite(os.path.join(dotgit, HEAD), '%s\n' % 
+                self.GetRevisionId())
 
         cmd = ['read-tree', '--reset', '-u']
         cmd.append('-v')
@@ -2528,7 +2550,8 @@ class Project(object):
         cmd.append('--oneline')
 
       try:
-        log = GitCommand(self, cmd, capture_stdout=True, capture_stderr=True)
+        log = GitCommand(
+          self, cmd, capture_stdout=True, capture_stderr=True)
         if log.Wait() == 0:
           return log.stdout
       except GitError:

@@ -324,7 +324,8 @@ later is required to fix a server side protocol bug.
 
         if not success:
           err_event.set()
-          print('error: Cannot fetch %s' % project.name, file=sys.stderr)
+          print(
+            'error: Cannot fetch %s' % project.name, file=sys.stderr)
           if opt.force_broken:
             print('warn: --force-broken, continuing to sync',
                   file=sys.stderr)
@@ -402,8 +403,10 @@ later is required to fix a server side protocol bug.
     gc_gitdirs = {}
     for project in projects:
       if len(project.manifest.GetProjectsWithName(project.name)) > 1:
-        print('Shared project %s found, disabling pruning.' % project.name)
-        project.bare_git.config('--replace-all', 'gc.pruneExpire', 'never')
+        print('Shared project %s found, disabling pruning.'
+               % project.name)
+        project.bare_git.config(
+          '--replace-all', 'gc.pruneExpire', 'never')
       gc_gitdirs[project.gitdir] = project.bare_git
 
     has_dash_c = git_require((1, 7, 2))
@@ -468,8 +471,10 @@ later is required to fix a server side protocol bug.
     try:
       shutil.rmtree(os.path.join(path, '.git'))
     except OSError:
-      print('Failed to remove %s' % os.path.join(path, '.git'), file=sys.stderr)
-      print('error: Failed to delete obsolete path %s' % path, file=sys.stderr)
+      print('Failed to remove %s' % 
+            os.path.join(path, '.git'), file=sys.stderr)
+      print('error: Failed to delete obsolete path %s' % 
+            path, file=sys.stderr)
       print('       remove manually, then run sync again', file=sys.stderr)
       return -1
 
@@ -482,7 +487,8 @@ later is required to fix a server side protocol bug.
         try:
           os.remove(os.path.join(root, f))
         except OSError:
-          print('Failed to remove %s' % os.path.join(root, f), file=sys.stderr)
+          print('Failed to remove %s' % 
+                os.path.join(root, f), file=sys.stderr)
           failed = True
       dirs[:] = [d for d in dirs
                  if not os.path.lexists(os.path.join(root, d, '.git'))]
@@ -493,17 +499,20 @@ later is required to fix a server side protocol bug.
         try:
           os.remove(d)
         except OSError:
-          print('Failed to remove %s' % os.path.join(root, d), file=sys.stderr)
+          print('Failed to remove %s' % 
+                os.path.join(root, d), file=sys.stderr)
           failed = True
       elif len(os.listdir(d)) == 0:
         try:
           os.rmdir(d)
         except OSError:
-          print('Failed to remove %s' % os.path.join(root, d), file=sys.stderr)
+          print('Failed to remove %s' % 
+                os.path.join(root, d), file=sys.stderr)
           failed = True
           continue
     if failed:
-      print('error: Failed to delete obsolete path %s' % path, file=sys.stderr)
+      print('error: Failed to delete obsolete path %s' % 
+            path, file=sys.stderr)
       print('       remove manually, then run sync again', file=sys.stderr)
       return -1
 
@@ -537,7 +546,8 @@ later is required to fix a server side protocol bug.
         if not path:
           continue
         if path not in new_project_paths:
-          # If the path has already been deleted, we don't need to do it
+          # If the path has already been deleted, we don't need to do
+          # it
           gitdir = os.path.join(self.manifest.topdir, path, '.git')
           if os.path.exists(gitdir):
             project = Project(
@@ -546,7 +556,8 @@ later is required to fix a server side protocol bug.
                            remote = RemoteSpec('origin'),
                            gitdir = gitdir,
                            objdir = gitdir,
-                           worktree = os.path.join(self.manifest.topdir, path),
+                           worktree = os.path.join(
+                            self.manifest.topdir, path),
                            relpath = path,
                            revisionExpr = 'HEAD',
                            revisionId = None,
@@ -630,16 +641,19 @@ later is required to fix a server side protocol bug.
             pass
           else:
             try:
-              parse_result = urllib.parse.urlparse(manifest_server)
+              parse_result = urllib.parse.urlparse(
+                manifest_server)
               if parse_result.hostname:
-                auth = info.authenticators(parse_result.hostname)
+                auth = info.authenticators(
+                  parse_result.hostname)
                 if auth:
                   username, _account, password = auth
                 else:
                   print('No credentials found for %s in .netrc'
                         % parse_result.hostname, file=sys.stderr)
             except netrc.NetrcParseError as e:
-              print('Error parsing .netrc file: %s' % e, file=sys.stderr)
+              print('Error parsing .netrc file: %s' % 
+                    e, file=sys.stderr)
 
         if (username and password):
           manifest_server = manifest_server.replace('://', '://%s:%s@' %
@@ -651,7 +665,8 @@ later is required to fix a server side protocol bug.
         manifest_server = manifest_server[len('persistent-'):]
 
       try:
-        server = xmlrpc.client.Server(manifest_server, transport=transport)
+        server = xmlrpc.client.Server(
+          manifest_server, transport=transport)
         if opt.smart_sync:
           p = self.manifest.manifestProject
           b = p.GetBranch(p.CurrentBranch)
@@ -662,13 +677,16 @@ later is required to fix a server side protocol bug.
           env = os.environ.copy()
           if 'SYNC_TARGET' in env:
             target = env['SYNC_TARGET']
-            [success, manifest_str] = server.GetApprovedManifest(branch, target)
+            [success, manifest_str] = server.GetApprovedManifest(
+              branch, target)
           elif 'TARGET_PRODUCT' in env and 'TARGET_BUILD_VARIANT' in env:
             target = '%s-%s' % (env['TARGET_PRODUCT'],
                                 env['TARGET_BUILD_VARIANT'])
-            [success, manifest_str] = server.GetApprovedManifest(branch, target)
+            [success, manifest_str] = server.GetApprovedManifest(
+              branch, target)
           else:
-            [success, manifest_str] = server.GetApprovedManifest(branch)
+            [success, manifest_str] = server.GetApprovedManifest(
+              branch)
         else:
           assert(opt.smart_tag)
           [success, manifest_str] = server.GetManifest(opt.smart_tag)
@@ -748,8 +766,10 @@ later is required to fix a server side protocol bug.
         gitc_projects = None
 
       if gitc_projects != [] and not opt.local_only:
-        print('Updating GITC client: %s' % self.gitc_manifest.gitc_client_name)
-        manifest = GitcManifest(self.repodir, self.gitc_manifest.gitc_client_name)
+        print('Updating GITC client: %s' % 
+              self.gitc_manifest.gitc_client_name)
+        manifest = GitcManifest(
+          self.repodir, self.gitc_manifest.gitc_client_name)
         if manifest_name:
           manifest.Override(manifest_name)
         else:

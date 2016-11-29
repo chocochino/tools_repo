@@ -179,7 +179,8 @@ contain a line that matches both expressions:
     have_rev = False
     if opt.revision:
       if '--cached' in cmd_argv:
-        print('fatal: cannot combine --cached and --revision', file=sys.stderr)
+        print(
+          'fatal: cannot combine --cached and --revision', file=sys.stderr)
         sys.exit(1)
       have_rev = True
       cmd_argv.extend(opt.revision)

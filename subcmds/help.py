@@ -168,7 +168,8 @@ Displays detailed usage information about a command.
       try:
         cmd = self.commands[name]
       except KeyError:
-        print("repo: '%s' is not a repo command." % name, file=sys.stderr)
+        print(
+          "repo: '%s' is not a repo command." % name, file=sys.stderr)
         sys.exit(1)
 
       cmd.manifest = self.manifest

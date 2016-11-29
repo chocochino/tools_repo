@@ -169,7 +169,8 @@ class Command(object):
           project = self._GetProjectByPath(manifest, path)
 
           # If it's not a derived project, update path->project mapping and
-          # search again, as arg might actually point to a derived subproject.
+          # search again, as arg might actually point to a derived
+          # subproject.
           if (project and not project.Derived and (submodules_ok or
                                                    project.sync_s)):
             search_again = False
@@ -177,7 +178,8 @@ class Command(object):
               self._UpdatePathToProjectMap(subproject)
               search_again = True
             if search_again:
-              project = self._GetProjectByPath(manifest, path) or project
+              project = self._GetProjectByPath(
+                manifest, path) or project
 
           if project:
             projects = [project]
@@ -203,7 +205,8 @@ class Command(object):
     patterns = [re.compile(r'%s' % a, re.IGNORECASE) for a in args]
     for project in self.GetProjects(''):
       for pattern in patterns:
-        match = pattern.search(project.name) or pattern.search(project.relpath)
+        match = pattern.search(
+          project.name) or pattern.search(project.relpath)
         if not inverse and match:
           result.append(project)
           break
